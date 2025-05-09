@@ -31,7 +31,7 @@ pip install tqdm openpyxl
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/yourusername/logfinder.git
+git clone https://github.com/threatlabindonesia/logcheckerstealers.git
 cd logfinder
 pip install -r requirements.txt
 ```
