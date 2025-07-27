@@ -1,171 +1,165 @@
-# 🛡️ LogFinder by Om Apip
+# 🔍 LogFinder Enhanced
 
-**LogFinder** is an open-source OSINT tool built by Om Apip to help you quickly scan `.txt` files (often from log-stealer dumps) and search for sensitive keywords such as emails, wallet addresses, credentials, or financial service references. The tool supports multi-format export: `.txt`, `.csv`, `.json`, and `.xlsx`.
+**LogFinder Enhanced** is a powerful Python-based tool designed for digital forensics and incident response. It automates the discovery of credentials and system information within directory structures, helping analysts extract, filter, and correlate data quickly and efficiently.
+
+## ✨ Features
+
+- **Credential Extraction**  
+  Parses files like `passwords.txt`, `credentials.txt`, etc., to extract usernames, passwords, and URLs.
+
+- **System Info Parsing**  
+  Retrieves metadata like device name, username, threat name (e.g., Lumma, RedLine), installation date, and compromise date from files such as `system_info.txt`.
+
+- **Keyword Filtering**  
+  Filters results by specified keywords (e.g., domains like `example.com`), ensuring only relevant credentials are extracted.
+
+- **Flexible Output Formats**  
+  Supports export to `.xlsx`, `.csv`, `.json`, and `.txt`.
+
+- **Optimized for Performance**  
+  Uses parallel processing and efficient line-by-line file reading to scale across large directories.
 
 ---
 
-## 🚀 Features
+## 🧰 Requirements
 
-- ✅ Recursively scan `.txt` files in a given folder
-- ✅ Accepts both inline and bulk keyword input (via file)
-- ✅ Supports direct terminal output or saving to file
-- ✅ Smart export in `.txt`, `.csv`, `.json`, `.xlsx`
-- ✅ Built-in progress bar with clean output formatting
-- ✅ Supports CLI and executable `.exe` builds for Windows
+- Python 3.6+
+- OS: Windows, Linux, or macOS
+- File read/write access to target directories
 
----
+### 📦 Python Dependencies
 
-## 🧱 Requirements
-
-- Python 3.7+
-- Required libraries:
+Install via:
 
 ```bash
-pip install tqdm openpyxl
+pip install openpyxl tqdm
 ````
 
 ---
 
-## ⚙️ Installation
-
-Clone the repo and install dependencies:
+## 🚀 Installation
 
 ```bash
-git clone https://github.com/threatlabindonesia/logcheckerstealers.git
-cd logfinder
-pip install -r requirements.txt
-```
-
-Or install manually:
-
-```bash
-pip install tqdm openpyxl
+git clone https://github.com/threatlabindonesia/LogChekerStealers.git
+cd LogChekerStealers
 ```
 
 ---
 
-## 📥 Usage
+## ⚙️ Usage
+
+### Basic Command:
 
 ```bash
-python logfinder.py -p <path_to_logs> [-k keyword1 keyword2 ...] [-kf keyword_file.txt] [-o output.format]
+python logfinder.py -p <directory_path> -k <keyword> -o <output_file>
 ```
 
 ### Arguments:
 
-| Argument                   | Description                                               |
-| -------------------------- | --------------------------------------------------------- |
-| `-p` or `--path`           | Base directory to scan `.txt` files recursively           |
-| `-k` or `--keywords`       | One or more keywords (space separated)                    |
-| `-kf` or `--keywords-file` | Path to a `.txt` file with keywords (one per line)        |
-| `-o` or `--output`         | Output filename with extension (.txt, .csv, .json, .xlsx) |
+| Flag               | Description                                                              |
+| ------------------ | ------------------------------------------------------------------------ |
+| `-p`, `--path`     | Path to directory to scan *(required)*                                   |
+| `-k`, `--keywords` | Keywords (e.g., `example.com`). Separate with spaces                     |
+| `-kf`              | Path to keyword list file (`.txt`, one keyword per line)                 |
+| `-o`, `--output`   | Output path + extension `.xlsx`, `.csv`, `.json`, or `.txt` *(required)* |
 
----
-
-## 🧪 Example Commands
-
-### 1️⃣ Show results in terminal only:
+### Example:
 
 ```bash
-python logfinder.py -p ./Downloads/logs -kf keywords.txt
+python logfinder.py -p /data/logs -k example.com -o results.xlsx
 ```
 
-### 2️⃣ Save results to Excel:
+### Using Keyword File:
+
+Create `keywords.txt`:
+
+```
+example.com
+test.org
+```
+
+Then run:
 
 ```bash
-python logfinder.py -p ./Downloads/logs -kf keywords.txt -o result.xlsx
+python logfinder.py -p /data/logs -kf keywords.txt -o results.xlsx
 ```
 
-### 3️⃣ Use direct inline keywords:
+---
+
+## 📁 Expected Directory Structure
 
 ```bash
-python logfinder.py -p ./Downloads/logs -k binance gmail paypal -o output.json
+/data/logs/
+├── credentials.txt
+├── system_info.txt
+```
+
+### Example File Contents:
+
+**credentials.txt**
+
+```
+URL: https://login.example.com
+USER: john_doe
+PASS: securepass123
+```
+
+**system\_info.txt**
+
+```
+- Computer Name: WORKSTATION-123
+- UserName: JohnDoe
+- Local Time: 2025-07-27 10:15:30
 ```
 
 ---
 
-## 📝 Sample `keywords.txt`
-
-```
-binance
-tokocrypto
-paypal
-gmail
-```
-
----
-
-## 📤 Output Examples
-
-### 🖥 Terminal output (when `-o` is not used)
-
-```
-🔍 Found Results:
-================================================================================
-[1] 📄 File   : logs/dump1/passwords.txt
-    🔑 Keyword: binance
---------------------------------------------------------------------------------
-[2] 📄 File   : logs/dump2/system_info.txt
-    🔑 Keyword: gmail
---------------------------------------------------------------------------------
-```
-
-### 📄 Output file examples:
-
-#### `output.txt`
-
-```
-File: logs/dump1/passwords.txt
-Keyword: binance
---------------------------------------------------------------------------------
-File: logs/dump2/system_info.txt
-Keyword: gmail
---------------------------------------------------------------------------------
-```
-
-#### `output.csv`
-
-| file\_path                  | keyword |
-| --------------------------- | ------- |
-| logs/dump1/passwords.txt    | binance |
-| logs/dump2/system\_info.txt | gmail   |
-
-#### `output.json`
-
-```json
-[
-  {
-    "file_path": "logs/dump1/passwords.txt",
-    "keyword": "binance"
-  },
-  {
-    "file_path": "logs/dump2/system_info.txt",
-    "keyword": "gmail"
-  }
-]
-```
-
-#### `output.xlsx`
-
-| File Path                   | Keyword |
-| --------------------------- | ------- |
-| logs/dump1/passwords.txt    | binance |
-| logs/dump2/system\_info.txt | gmail   |
-
----
-
-## 💡 Tips
-
-* Use `--help` to view all available options:
+## 🧪 Sample Console Output
 
 ```bash
-python logfinder.py --help
-```
+⚡️ LogFinder Enhanced ⚡️
 
-* You can combine `-k` and `-o`, or use just `-kf` for bulk keyword input.
+🕒 Process started at: 2025-07-27 10:33:00
+📂 Scanning path: /data/logs
+📝 Found password file: credentials.txt
+✅ Keyword 'example.com' found in credentials.txt
+✅ Valid URL found: https://login.example.com
+📄 Found system info file: system_info.txt
+✅ Device: WORKSTATION-123, User: JohnDoe, Compromise: 2025-07-27 10:15:30
+💾 Saved to: results.xlsx
+⏳ Time taken: 0:00:02.123456
+```
 
 ---
 
-## 👤 Author
+## 📊 Sample Output (results.xlsx)
 
-**Om Apip**
-Cybersecurity & Threat Intelligence Researcher
+| File Path                  | Keyword     | URL                                                    | Username  | Password      | Device Name     | Device Username | Threat Name                             | Install Date | Compromised Date    | Source          |
+| -------------------------- | ----------- | ------------------------------------------------------ | --------- | ------------- | --------------- | --------------- | --------------------------------------- | ------------ | ------------------- | --------------- |
+| /data/logs/credentials.txt | example.com | [https://login.example.com](https://login.example.com) | john\_doe | securepass123 | WORKSTATION-123 | JohnDoe         | Potential Malware (suspicious\_app.exe) | 19043        | 2025-07-27 10:15:30 | credentials.txt |
+
+---
+
+## 🧾 Notes
+
+* Only URLs matching the keyword(s) will be included.
+* `system_info.txt` is expected in the same or parent directory as the password files.
+* If the output file is open or locked, please close it or specify a new path.
+* The tool uses ThreadPoolExecutor for concurrent processing across multiple files.
+
+---
+
+## 👨‍💻 Author
+
+**Afif Hidayatullah**
+Developer of cybersecurity and digital forensics tools.
+
+* [LinkedIn](https://www.linkedin.com/in/afif-hidayatullah)
+
+---
+
+## ⭐️ Star This Repo!
+
+If you find this tool useful, please consider starring ⭐ the repository on GitHub!
+
+```
